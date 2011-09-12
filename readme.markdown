@@ -19,7 +19,7 @@ The AzureSugarTableContext allows you to create new customers easily:
 
     using (var context = new AzureSugarTableContext(CloudStorageAccount.DevelopmentStorageAccount))
     {
-    	Customer customer = context.Create<Customer>();
+    	var customer = context.Create<Customer>();
     	customer.Firstname = "John";
     	customer.Lastname = "Smith";
     }
@@ -30,9 +30,9 @@ It's just as easy to query the table:
 
     using (var context = new AzureSugarTableContext(CloudStorageAccount.DevelopmentStorageAccount))
     {
-        foreach (Customer c in (from c in context.Query<Customer>() where c.Firstname == "John" select c))
+        foreach (var customer in (from c in context.Query<Customer>() where c.Firstname == "John" select c))
         {
-            Console.WriteLine(c.Firstname);
+            Console.WriteLine(customer.Firstname);
         }
     }
 
@@ -49,7 +49,7 @@ Queues are strongly typed. Let's say we are working with this class.
 	
 To push a message on to the queue, just do this:
 
-    Foo foo = new Foo { Bar = "bar", Baz = "baz" };
+    var foo = new Foo { Bar = "bar", Baz = "baz" };
     var queue = new AzureSugarQueue<Foo>(CloudStorageAccount.DevelopmentStorageAccount);
     queue.Push(foo);
 
