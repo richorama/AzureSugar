@@ -42,7 +42,7 @@ namespace Two10.AzureSugar
             }
         }
 
-        public static T DeserializeString<T>(string value)
+        private static T DeserializeString<T>(string value)
         {
             if (string.IsNullOrWhiteSpace(value)) return default(T);
 

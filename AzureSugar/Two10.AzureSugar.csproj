@@ -8,8 +8,8 @@
     <ProjectGuid>{6183FFB2-3FE4-441C-BEA6-A79E25EFBA01}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AzureSugar</RootNamespace>
-    <AssemblyName>AzureSugar</AssemblyName>
+    <RootNamespace>Two10.AzureSugar</RootNamespace>
+    <AssemblyName>Two10.AzureSugar</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

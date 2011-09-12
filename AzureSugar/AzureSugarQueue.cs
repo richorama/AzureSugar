@@ -71,7 +71,7 @@ namespace Two10.AzureSugar
             this.Queue.AddMessage(new CloudQueueMessage(serializedValue));
         }
 
-        public static string Serialize<T>(T objectModel)
+        private static string Serialize<T>(T objectModel)
         {
             if (objectModel == null) return string.Empty;
 
