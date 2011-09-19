@@ -94,9 +94,14 @@ namespace Two10.AzureSugar
 
         public System.Collections.Generic.IEnumerable<T> AsQueryable()
         {
+            return this.AsQueryable(true);
+        }
+
+        public System.Collections.Generic.IEnumerable<T> AsQueryable(bool commitOnDispose)
+        {
             do
             {
-                using (var message = this.Pop())
+                using (var message = this.Pop(commitOnDispose))
                 {
                     if (null == message)
                     {

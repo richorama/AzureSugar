@@ -13,8 +13,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{4D515DDE-0ADF-441C-B3E5-BAC33AE7355E}"
-EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = AzureSugar.vsmdi
@@ -38,16 +36,6 @@ Global
 		{6183FFB2-3FE4-441C-BEA6-A79E25EFBA01}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{6183FFB2-3FE4-441C-BEA6-A79E25EFBA01}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{6183FFB2-3FE4-441C-BEA6-A79E25EFBA01}.Release|x86.ActiveCfg = Release|Any CPU
-		{4D515DDE-0ADF-441C-B3E5-BAC33AE7355E}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{4D515DDE-0ADF-441C-B3E5-BAC33AE7355E}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{4D515DDE-0ADF-441C-B3E5-BAC33AE7355E}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{4D515DDE-0ADF-441C-B3E5-BAC33AE7355E}.Debug|x86.ActiveCfg = Debug|x86
-		{4D515DDE-0ADF-441C-B3E5-BAC33AE7355E}.Debug|x86.Build.0 = Debug|x86
-		{4D515DDE-0ADF-441C-B3E5-BAC33AE7355E}.Release|Any CPU.ActiveCfg = Release|x86
-		{4D515DDE-0ADF-441C-B3E5-BAC33AE7355E}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{4D515DDE-0ADF-441C-B3E5-BAC33AE7355E}.Release|Mixed Platforms.Build.0 = Release|x86
-		{4D515DDE-0ADF-441C-B3E5-BAC33AE7355E}.Release|x86.ActiveCfg = Release|x86
-		{4D515DDE-0ADF-441C-B3E5-BAC33AE7355E}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

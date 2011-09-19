@@ -74,6 +74,12 @@ namespace Two10.AzureSugar
             return this.Context.CreateQuery<T>(this.GetTableName<T>());
         }
 
+        public IQueryable<T> Query<T>(string partitionKey) where T : TableServiceEntity
+        {
+            return this.Context.CreateQuery<T>(this.GetTableName<T>()).Where(t => t.PartitionKey == partitionKey);
+        }
+
+        
         public void Dispose()
         {
             this.Context.SaveChanges();
@@ -108,6 +114,12 @@ namespace Two10.AzureSugar
         {
             this.CommitOnDispose = true;
         }
+
+        public T FindByRowKey<T>(string partitionKey, string rowKey) where T: TableServiceEntity
+        {
+            return this.Query<T>(partitionKey).Where(t => t.RowKey == rowKey).FirstOrDefault();
+        }
+
 
     }
 
