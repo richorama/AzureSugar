@@ -71,7 +71,7 @@ namespace Two10.AzureSugar
             this.Queue.AddMessage(new CloudQueueMessage(serializedValue));
         }
 
-        private static string Serialize<T>(T objectModel)
+        private static string Serialize<Y>(Y objectModel)
         {
             if (objectModel == null) return string.Empty;
 
@@ -84,7 +84,7 @@ namespace Two10.AzureSugar
                     XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
                     ns.Add(string.Empty, string.Empty);
 
-                    XmlSerializer serializer = new XmlSerializer(typeof(T));
+                    XmlSerializer serializer = new XmlSerializer(typeof(Y));
                     serializer.Serialize(xmlWriter, objectModel, ns);
 
                     return sw.ToString();
@@ -92,5 +92,24 @@ namespace Two10.AzureSugar
             }
         }
 
+        public System.Collections.Generic.IEnumerable<T> AsQueryable()
+        {
+            do
+            {
+                using (var message = this.Pop())
+                {
+                    if (null == message)
+                    {
+                        yield break;
+                    }
+
+                    yield return message.Content;
+                }
+            }
+            while (true);
+        }
+
     }
+
+
 }

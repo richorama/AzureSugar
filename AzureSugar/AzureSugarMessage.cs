@@ -42,14 +42,14 @@ namespace Two10.AzureSugar
             }
         }
 
-        private static T DeserializeString<T>(string value)
+        private static Y DeserializeString<Y>(string value)
         {
-            if (string.IsNullOrWhiteSpace(value)) return default(T);
+            if (string.IsNullOrWhiteSpace(value)) return default(Y);
 
             using (StringReader sr = new StringReader(value))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(T));
-                return (T)serializer.Deserialize(sr);
+                XmlSerializer serializer = new XmlSerializer(typeof(Y));
+                return (Y)serializer.Deserialize(sr);
             }
         }
 
