@@ -72,6 +72,13 @@ Your object is automatically deleted from the queue on the disposal of the messa
 
 In this case, the message will only be deleted if 'VoteCommit' is called.
 
+Queues also support IEnumerable, so you can apply linq expressions to the queue, and iterate over the messages:
+
+    foreach (var foo in queue.AsQueryable().Take(10).OrderBy(f => f.Bar))
+    {
+        Console.WriteLine(foo.Bar);
+    }
+
 The queue name is automatically derived from the type name 'Foo', however you can override this as well.
 
 About
