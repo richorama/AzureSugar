@@ -69,5 +69,6 @@ namespace Two10.AzureSugar
                 this.Queue.Queue.DeleteMessage(this.Message);
             }
         }
+
     }
 }

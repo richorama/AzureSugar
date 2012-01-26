@@ -17,6 +17,10 @@ namespace Two10.AzureSugar
 
         public DynamicTableContext(string tableName, Credentials credentials)
         {
+            if (tableName == null) throw new ArgumentNullException("tableName");
+            if (credentials == null) throw new ArgumentNullException("credentials");
+            //Contract.Requires<ArgumentNullException>(tableName != null);
+            //Contract.Requires<ArgumentNullException>(credentials != null);
             this.credentials = credentials;
             this.tableName = tableName;
         }
@@ -49,60 +53,59 @@ namespace Two10.AzureSugar
             yield break;
         }
 
-        public void InsertOrReplace(dynamic entry)
+        public void InsertOrReplace(dynamic entity)
         {
-            if (null == entry) throw new ArgumentNullException("entry");
-            var dictionary = entry as IDictionary<String, Object>;
-
-            if (null == dictionary) throw new ApplicationException("dynamic object should be an ExpandoObject");
-            if (!dictionary.ContainsKey("PartitionKey")) throw new ApplicationException("No PartitionKey");
-            if (!dictionary.ContainsKey("RowKey")) throw new ApplicationException("No RowKey");
-
-            var uri = string.Format(@"http://{0}.table.core.windows.net/{1}(PartitionKey='{2}',RowKey='{3}')", credentials.AccountName, tableName, entry.PartitionKey, entry.RowKey);
-
-            var webRequest = BuildRequest(uri);
-            webRequest.Method = "PUT";
-            webRequest.ContentType = @"application/atom+xml";
-
-            if (!dictionary.ContainsKey("Timestamp"))
-            {
-                dictionary.Add("Timestamp", "0001-01-01T00:00:00");
-            }
-
-            TableRequest.SignRequestForSharedKeyLite(webRequest, credentials);
-            WriteToRequestStream(dictionary, uri, webRequest);
-
-            var response = webRequest.GetResponse();
+            IDictionary<string, object> dictionary = ParseObject(entity);
+            var uri = string.Format(@"http://{0}.table.core.windows.net/{1}(PartitionKey='{2}',RowKey='{3}')", credentials.AccountName, tableName, dictionary["PartitionKey"], dictionary["RowKey"]);
+            Write(dictionary, uri, "PUT");
         }
 
-        public void Insert(dynamic entry)
+        public void Insert(dynamic entity)
         {
-            if (null == entry) throw new ArgumentNullException("entry");
-            var dictionary = entry as IDictionary<String, Object>;
+            IDictionary<string, object> dictionary = ParseObject(entity);
+            var uri = string.Format(@"http://{0}.table.core.windows.net/{1}", credentials.AccountName, tableName, dictionary["PartitionKey"], dictionary["RowKey"]);
+            this.Write(dictionary, uri, "POST");
+        }
 
-            if (null == dictionary) throw new ApplicationException("dynamic object should be an ExpandoObject");
-            if (!dictionary.ContainsKey("PartitionKey")) throw new ApplicationException("No PartitionKey");
-            if (!dictionary.ContainsKey("RowKey")) throw new ApplicationException("No RowKey");
+        public void InsertOrMerge(dynamic entity)
+        {
+            IDictionary<string, object> dictionary = ParseObject(entity);
+            var uri = string.Format(@"http://{0}.table.core.windows.net/{1}(PartitionKey='{2}',RowKey='{3}')", credentials.AccountName, tableName, dictionary["PartitionKey"], dictionary["RowKey"]);
+            this.Write(dictionary, uri, "MERGE");
+        }
 
-            var uri = string.Format(@"http://{0}.table.core.windows.net/{1}", credentials.AccountName, tableName, entry.PartitionKey, entry.RowKey);
-            var webRequest = BuildRequest(uri);
-            webRequest.Method = "POST";
+        private void Write(IDictionary<string, object> entity, string uri, string method)
+        {
+            //Contract.Requires<ArgumentNullException>(entry != null);
+            //Contract.Requires<ArgumentException>(entry.ContainsKey("PartitionKey"), "No PartitionKey");
+            //Contract.Requires<ArgumentException>(entry.ContainsKey("RowKey"), "No RowKey");
+
+            var webRequest = BuildRequest(uri, method);
             webRequest.ContentType = @"application/atom+xml";
 
-
-            if (!dictionary.ContainsKey("Timestamp"))
+            if (!entity.ContainsKey("Timestamp"))
             {
-                dictionary.Add("Timestamp", "0001-01-01T00:00:00");
+                entity.Add("Timestamp", "0001-01-01T00:00:00");
             }
 
             TableRequest.SignRequestForSharedKeyLite(webRequest, credentials);
-            WriteToRequestStream(dictionary, uri, webRequest);
+            WriteToRequestStream(entity, uri, webRequest);
 
             var response = webRequest.GetResponse();
 
         }
 
-
+        private IDictionary<string, object> ParseObject(dynamic value)
+        {
+            if (value == null) return new Dictionary<string, object>();
+            if (value is IDictionary<string, object>) return value;
+            var dictionary = new Dictionary<string, object>();
+            foreach (var prop in value.GetType().GetProperties())
+            {
+                dictionary.Add(prop.Name, prop.GetValue(value, null));
+            }
+            return dictionary;
+        }
 
         private static void WriteToRequestStream(IDictionary<string, object> dictionary, string uri, HttpWebRequest webRequest)
         {
@@ -130,10 +133,10 @@ namespace Two10.AzureSugar
         }
 
 
-        private HttpWebRequest BuildRequest(string uri)
+        private HttpWebRequest BuildRequest(string uri, string method = "GET")
         {
             var webRequest = (HttpWebRequest)WebRequest.Create(uri);
-            webRequest.Method = "GET";
+            webRequest.Method = method;
             webRequest.Headers.Add("DataServiceVersion", "2.0;NetFx");
             webRequest.Headers.Add("MaxDataServiceVersion", "2.0;NetFx");
             webRequest.Headers.Add("x-ms-version", "2011-08-18");
@@ -154,11 +157,6 @@ namespace Two10.AzureSugar
                 yield return dictionary;
             }
         }
-
-
-
-
-
 
     }
 }
