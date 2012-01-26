@@ -58,7 +58,7 @@ namespace Two10.AzureSugar
             if (!dictionary.ContainsKey("PartitionKey")) throw new ApplicationException("No PartitionKey");
             if (!dictionary.ContainsKey("RowKey")) throw new ApplicationException("No RowKey");
 
-            var uri = string.Format(@"http://{0}.table.core.windows.net/{1}(PartitionKey=""{2}"",RowKey=""{3}"")", credentials.AccountName, tableName, entry.PartitionKey, entry.RowKey);
+            var uri = string.Format(@"http://{0}.table.core.windows.net/{1}(PartitionKey='{2}',RowKey='{3}')", credentials.AccountName, tableName, entry.PartitionKey, entry.RowKey);
 
             var webRequest = BuildRequest(uri);
             webRequest.Method = "PUT";
@@ -136,6 +136,7 @@ namespace Two10.AzureSugar
             webRequest.Method = "GET";
             webRequest.Headers.Add("DataServiceVersion", "2.0;NetFx");
             webRequest.Headers.Add("MaxDataServiceVersion", "2.0;NetFx");
+            webRequest.Headers.Add("x-ms-version", "2011-08-18");
             return webRequest;
         }
 
