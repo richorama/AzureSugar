@@ -6,9 +6,11 @@ using System.Net;
 using System.Text;
 using System.Xml.Linq;
 using Microsoft.WindowsAzure.StorageClient.Protocol;
+using Microsoft.WindowsAzure;
 
 namespace Two10.AzureSugar
 {
+    
     public class DynamicTableContext
     {
         private Credentials credentials;
@@ -19,8 +21,6 @@ namespace Two10.AzureSugar
         {
             if (tableName == null) throw new ArgumentNullException("tableName");
             if (credentials == null) throw new ArgumentNullException("credentials");
-            //Contract.Requires<ArgumentNullException>(tableName != null);
-            //Contract.Requires<ArgumentNullException>(credentials != null);
             this.credentials = credentials;
             this.tableName = tableName;
         }
@@ -76,9 +76,9 @@ namespace Two10.AzureSugar
 
         private void Write(IDictionary<string, object> entity, string uri, string method)
         {
-            //Contract.Requires<ArgumentNullException>(entry != null);
-            //Contract.Requires<ArgumentException>(entry.ContainsKey("PartitionKey"), "No PartitionKey");
-            //Contract.Requires<ArgumentException>(entry.ContainsKey("RowKey"), "No RowKey");
+            if (entity == null) throw new ArgumentNullException("entity");
+            if (!entity.ContainsKey("PartitionKey")) throw new ArgumentException("Entity has no PartitionKey");
+            if (!entity.ContainsKey("RowKey")) throw new ArgumentException("Entity has no RowKey");
 
             var webRequest = BuildRequest(uri, method);
             webRequest.ContentType = @"application/atom+xml";
