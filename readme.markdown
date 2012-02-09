@@ -35,6 +35,28 @@ It's just as easy to query the table:
             Console.WriteLine(customer.Firstname);
         }
     }
+    
+Dynamic Table Storage
+---------------------
+Support is also available for using dynamic types (or dictionaries) to insert and query table storage.
+
+First, create a context object:
+
+    var context = new DynamicTableContext("TableName", credentials);
+
+Then inserting a record is easy using a dynamic object for example:
+
+    context.Insert(new { PartitionKey = "1", RowKey = "1", Value1 = "Hello", Value2 = "World" });
+
+You can do the same with a dictionary:
+
+    var dictionary = new Dictionary<string, object>();
+    dictionary["PartitionKey"] = "2";
+    dictionary["RowKey"] = "2";
+    dictionary["Value3"] = "FooBar";
+    context.Insert(dictionary);
+
+           
 
 Queues
 ------
