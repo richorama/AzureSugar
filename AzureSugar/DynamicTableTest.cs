@@ -24,7 +24,7 @@ namespace Two10.AzureSugar
             var tableClient = account.CreateCloudTableClient();
             tableClient.CreateTableIfNotExist(TABLE_NAME);
             var context = new DynamicTableContext(TABLE_NAME, new Credentials(ACCOUNT_NAME, KEY));
-            context.Insert(new { PartitionKey = "1", RowKey = "1", Value1 = "TEST" });
+            context.InsertOrReplace(new { PartitionKey = "1", RowKey = "1", Value1 = "TEST" });
         }
 
         [Test]
@@ -53,13 +53,10 @@ namespace Two10.AzureSugar
         {
             Credentials credentials = new Credentials(ACCOUNT_NAME, KEY);
             DynamicTableContext context = new DynamicTableContext(TABLE_NAME, credentials);
-            foreach (IDictionary<string, object> item in context.Get("1", "1"))
-            {
-                foreach (string key in item.Keys)
-                {
-                    Console.WriteLine(key + " = " + item[key]);
-                }
-            }
+            dynamic item = context.Get("1", "1");
+            Assert.IsNotNull(item);
+            Assert.AreEqual("1", item.PartitionKey);
+            Assert.AreEqual("1", item.RowKey);
         }
 
         [Test]
@@ -95,5 +92,37 @@ namespace Two10.AzureSugar
             item.Value = "Hello World";
             context.InsertOrMerge(item);
         }
+
+        [Test]
+        public void Test07()
+        {
+            Credentials credentials = new Credentials(ACCOUNT_NAME, KEY);
+            DynamicTableContext context = new DynamicTableContext(TABLE_NAME, credentials);
+            var dictionary = new Dictionary<string, object>();
+            dictionary["PartitionKey"] = "2";
+            dictionary["RowKey"] = "2";
+            dictionary["Value3"] = "FooBar";
+            context.InsertOrReplace(dictionary);
+        }
+
+        [Test]
+        [ExpectedException]
+        public void Test08()
+        {
+            Credentials credentials = new Credentials(ACCOUNT_NAME, KEY);
+            DynamicTableContext context = new DynamicTableContext(TABLE_NAME, credentials);
+            dynamic item = new { PartitionKey = "1", RowKey = "1", Value = "Hello World" };
+            context.Insert(item);
+        }
+
+        [Test]
+        public void Test09()
+        {
+            Credentials credentials = new Credentials(ACCOUNT_NAME, KEY);
+            DynamicTableContext context = new DynamicTableContext(TABLE_NAME, credentials);
+            dynamic item = context.Get("1", "999"); // item does not exist
+            Assert.IsNull(item);
+        }
+
     }
 }

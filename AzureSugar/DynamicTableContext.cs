@@ -6,11 +6,10 @@ using System.Net;
 using System.Text;
 using System.Xml.Linq;
 using Microsoft.WindowsAzure.StorageClient.Protocol;
-using Microsoft.WindowsAzure;
 
 namespace Two10.AzureSugar
 {
-    
+
     public class DynamicTableContext
     {
         private Credentials credentials;
@@ -39,18 +38,25 @@ namespace Two10.AzureSugar
             yield break;
         }
 
-        public IEnumerable<dynamic> Get(string partitionKey, string rowKey)
+        public dynamic Get(string partitionKey, string rowKey)
         {
             var webRequest = BuildRequest(string.Format(@"http://{0}.table.core.windows.net/{1}(PartitionKey='{2}',RowKey='{3}')", credentials.AccountName, tableName, partitionKey, rowKey));
             TableRequest.SignRequestForSharedKeyLite(webRequest, credentials);
-            var response = webRequest.GetResponse();
-
-            foreach (var item in ParseResponse(response))
+            try
             {
-                yield return item;
+                var response = webRequest.GetResponse();
+                foreach (var item in ParseResponse(response))
+                {
+                    // return the first item in the result set
+                    return item;
+                }
             }
-
-            yield break;
+            catch (WebException)
+            {
+                // the server will return a 404 if the entity does not exist
+                return null;
+            }
+            return null;
         }
 
         public void InsertOrReplace(dynamic entity)
