@@ -56,7 +56,16 @@ You can do the same with a dictionary:
     dictionary["Value3"] = "FooBar";
     context.Insert(dictionary);
 
-           
+Retrieving an entity is striaght forward, just pass in the values for partition key and row key:
+
+    dynamic entity = content.Get("1", "1");
+    
+You can also pass in a query:
+
+    foreach (dynamic item in context.Query("Value1 eq 'Hello'"))
+    {
+      Console.WriteLine(item.RowKey);
+    }
 
 Queues
 ------
