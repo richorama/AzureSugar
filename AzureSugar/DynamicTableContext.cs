@@ -28,11 +28,13 @@ namespace Two10.AzureSugar
         {
             var webRequest = BuildRequest(string.Format(@"http://{0}.table.core.windows.net/{1}()?$filter={2}", credentials.AccountName, tableName, queryString.Replace(' ', '+')));
             TableRequest.SignRequestForSharedKeyLite(webRequest, credentials);
-            var response = webRequest.GetResponse();
-
-            foreach (var item in ParseResponse(response))
+            using (var response = webRequest.GetResponse())
             {
-                yield return item;
+
+                foreach (var item in ParseResponse(response))
+                {
+                    yield return item;
+                }
             }
 
             yield break;
@@ -44,11 +46,13 @@ namespace Two10.AzureSugar
             TableRequest.SignRequestForSharedKeyLite(webRequest, credentials);
             try
             {
-                var response = webRequest.GetResponse();
-                foreach (var item in ParseResponse(response))
+                using (var response = webRequest.GetResponse())
                 {
-                    // return the first item in the result set
-                    return item;
+                    foreach (var item in ParseResponse(response))
+                    {
+                        // return the first item in the result set
+                        return item;
+                    }
                 }
             }
             catch (WebException)
@@ -97,7 +101,8 @@ namespace Two10.AzureSugar
             TableRequest.SignRequestForSharedKeyLite(webRequest, credentials);
             WriteToRequestStream(entity, uri, webRequest);
 
-            var response = webRequest.GetResponse();
+            using (var response = webRequest.GetResponse())
+            { }
 
         }
 

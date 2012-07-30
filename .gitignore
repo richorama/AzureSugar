@@ -9,8 +9,6 @@ bin
 */Bin
 */obj
 */Obj
-*/packages
-packages
 obj
 !/lib
 *.user
@@ -23,3 +21,4 @@ _ReSharper.*
 *.vssscc
 *.csproj.user
 TestResult.xml
+*.*crunch*
